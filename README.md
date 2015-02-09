@@ -14,3 +14,16 @@ Data FlowSets manually.
 Most of structure names and comments are taken directly from RFC 3954. Reading
 the NetFlow v9 protocol specification is highly recommended before using this
 package.
+
+Examples
+--------
+
+There are three demo applications created as library usage examples:
+
+* **nf9-packet-dump** - Dumps contents of NetFlow v9 packets in plaintext or
+JSON. Minimal library usage example.
+* **nf9-template-dump** - Tool for inspecting Data Templates and Options Data
+Templates in NetFlow v9 streams. This tool also displays field names and
+descriptions. Moderate library usage example.
+* **nf9-data-dump** - Tool for extracting Data Flow information from NetFlow v9
+streams. Extended library usage example.
