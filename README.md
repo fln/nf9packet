@@ -1,6 +1,8 @@
 nf9packet
 =========
 
+[![Godoc](http://img.shields.io/badge/godoc-reference-blue.svg)](https://godoc.org/github.com/fln/nf9packet)
+
 This is golang library for NetFlow v9 packet decoding. It can be used to create
 NetFlow v9 packet inspection and analysis tools, NetFlow collectors or higher
 level libraries.
