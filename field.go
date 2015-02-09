@@ -51,3 +51,22 @@ func (this *Field) DataToString(data []byte) string {
 func (this *Field) DataToUint64(data []byte) uint64 {
 	return fieldToUInteger(data)
 }
+
+func (this *Field) ScopeName() string {
+	switch this.Type {
+	case 1: return "System"
+	case 2: return "Interface"
+	case 3: return "Line Card"
+	case 4: return "Cache"
+	case 5: return "Template"
+	default: return "Unknown"
+	}
+}
+
+func (this *Field) ScopeDefaultLength() int {
+	return -1
+}
+
+func (this *Field) ScopeDescription() string {
+	return "The relevant portion of the Exporter/NetFlow process to which the Options Template Record refers."
+}
