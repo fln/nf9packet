@@ -52,6 +52,7 @@ func (this *Field) DataToUint64(data []byte) uint64 {
 	return fieldToUInteger(data)
 }
 
+// ScopeName is the same as Name() but should be used only for Scope Fields
 func (this *Field) ScopeName() string {
 	switch this.Type {
 	case 1: return "System"
@@ -63,10 +64,12 @@ func (this *Field) ScopeName() string {
 	}
 }
 
+// ScopeDefaultLength is the same as DefaultLength() but should be used only for Scope Fields
 func (this *Field) ScopeDefaultLength() int {
 	return -1
 }
 
+// ScopeDefaultLength is the same as DefaultLength() but should be used only for Scope Fields
 func (this *Field) ScopeDescription() string {
 	return "The relevant portion of the Exporter/NetFlow process to which the Options Template Record refers."
 }
