@@ -131,7 +131,13 @@ func parseFlowSet(buf *bytes.Buffer) (interface {}, error) {
 func Decode(data []byte) (*Packet, error) {
 	var p Packet
 	var err error
-	buf := bytes.NewBuffer(data)
+
+	// Create local copy of the "data" in case "data" slice is reused
+	// by the caller.
+	localData := make([]byte, len(data))
+	copy(localData, data)
+
+	buf := bytes.NewBuffer(localData)
 
 	headerLen := binary.Size(p.Version) + binary.Size(p.Count) +
 			binary.Size(p.SysUpTime) + binary.Size(p.UnixSecs) +
