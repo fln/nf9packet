@@ -18,7 +18,7 @@ func Dump(packet *Packet, w io.Writer) {
 	fmt.Fprintf(w, "SequenceNumber: %v\n", packet.SequenceNumber)
 	fmt.Fprintf(w, "SourceId: %v\n", packet.SourceId)
 
-	for i, _ := range packet.FlowSets {
+	for i := range packet.FlowSets {
 		switch set := packet.FlowSets[i].(type) {
 		case DataFlowSet:
 			set.dump(w)
@@ -30,49 +30,49 @@ func Dump(packet *Packet, w io.Writer) {
 	}
 }
 
-func (this *DataFlowSet) dump(w io.Writer) {
+func (dfs *DataFlowSet) dump(w io.Writer) {
 	fmt.Fprint(w, "\t==== Data FlowSet ====\n")
-	fmt.Fprintf(w, "\tId: %v\n", this.Id)
-	fmt.Fprintf(w, "\tLength: %v\n", this.Length)
-	fmt.Fprintf(w, "\tData: %v\n", this.Data)
+	fmt.Fprintf(w, "\tId: %v\n", dfs.Id)
+	fmt.Fprintf(w, "\tLength: %v\n", dfs.Length)
+	fmt.Fprintf(w, "\tData: %v\n", dfs.Data)
 }
 
-func (this *TemplateFlowSet) dump(w io.Writer) {
+func (dtpls *TemplateFlowSet) dump(w io.Writer) {
 	fmt.Fprint(w, "\t==== Template FlowSet ====\n")
-	fmt.Fprintf(w, "\tId: %v\n", this.Id)
-	fmt.Fprintf(w, "\tLength: %v\n", this.Length)
-	for i, _ := range this.Records {
-		this.Records[i].dump(w)
+	fmt.Fprintf(w, "\tId: %v\n", dtpls.Id)
+	fmt.Fprintf(w, "\tLength: %v\n", dtpls.Length)
+	for i := range dtpls.Records {
+		dtpls.Records[i].dump(w)
 	}
 }
 
-func (this *OptionsTemplateFlowSet) dump(w io.Writer) {
+func (otpls *OptionsTemplateFlowSet) dump(w io.Writer) {
 	fmt.Fprint(w, "\t==== Options Template FlowSet ====\n")
-	fmt.Fprintf(w, "\tId: %v\n", this.Id)
-	fmt.Fprintf(w, "\tLength: %v\n", this.Length)
-	for i, _ := range this.Records {
-		this.Records[i].dump(w)
+	fmt.Fprintf(w, "\tId: %v\n", otpls.Id)
+	fmt.Fprintf(w, "\tLength: %v\n", otpls.Length)
+	for i := range otpls.Records {
+		otpls.Records[i].dump(w)
 	}
 }
 
-func (this *TemplateRecord) dump(w io.Writer) {
+func (dtpl *TemplateRecord) dump(w io.Writer) {
 	fmt.Fprint(w, "\t\t==== Template Record ====\n")
-	fmt.Fprintf(w, "\t\tTemplateId: %v\n", this.TemplateId)
-	fmt.Fprintf(w, "\t\tFieldCount: %v\n", this.FieldCount)
-	for i, _ := range this.Fields {
-		fmt.Fprintf(w, "\t\tType(%v), Len(%v)\n", this.Fields[i].Type, this.Fields[i].Length)
+	fmt.Fprintf(w, "\t\tTemplateId: %v\n", dtpl.TemplateId)
+	fmt.Fprintf(w, "\t\tFieldCount: %v\n", dtpl.FieldCount)
+	for i := range dtpl.Fields {
+		fmt.Fprintf(w, "\t\tType(%v), Len(%v)\n", dtpl.Fields[i].Type, dtpl.Fields[i].Length)
 	}
 }
 
-func (this *OptionsTemplateRecord) dump(w io.Writer) {
+func (otpl *OptionsTemplateRecord) dump(w io.Writer) {
 	fmt.Fprint(w, "\t\t==== Options Template Record ====\n")
-	fmt.Fprintf(w, "\t\tTemplateId: %v\n", this.TemplateId)
-	fmt.Fprintf(w, "\t\tScopeLength: %v\n", this.ScopeLength)
-	fmt.Fprintf(w, "\t\tOptionLength: %v\n", this.OptionLength)
-	for i, _ := range this.Scopes {
-		fmt.Fprintf(w, "\t\tScopeType(%v), Len(%v)\n", this.Scopes[i].Type, this.Scopes[i].Length)
+	fmt.Fprintf(w, "\t\tTemplateId: %v\n", otpl.TemplateId)
+	fmt.Fprintf(w, "\t\tScopeLength: %v\n", otpl.ScopeLength)
+	fmt.Fprintf(w, "\t\tOptionLength: %v\n", otpl.OptionLength)
+	for i := range otpl.Scopes {
+		fmt.Fprintf(w, "\t\tScopeType(%v), Len(%v)\n", otpl.Scopes[i].Type, otpl.Scopes[i].Length)
 	}
-	for i, _ := range this.Options {
-		fmt.Fprintf(w, "\t\tOptionType(%v), Len(%v)\n", this.Options[i].Type, this.Options[i].Length)
+	for i := range otpl.Options {
+		fmt.Fprintf(w, "\t\tOptionType(%v), Len(%v)\n", otpl.Options[i].Type, otpl.Options[i].Length)
 	}
 }

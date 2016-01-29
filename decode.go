@@ -1,9 +1,9 @@
 package nf9packet
 
 import (
-	"fmt"
 	"bytes"
 	"encoding/binary"
+	"fmt"
 )
 
 func errorMissingData(bytes int) error {
@@ -18,11 +18,10 @@ func errorExtraBytes(bytes int) error {
 	return fmt.Errorf("Extra %d bytes at the end of the packet.", bytes)
 }
 
-
 func parseFieldList(buf *bytes.Buffer, count int) (list []Field) {
 	list = make([]Field, count)
 
-	for i := 0; i < count; i += 1 {
+	for i := 0; i < count; i++ {
 		binary.Read(buf, binary.BigEndian, &list[i])
 	}
 
@@ -38,7 +37,7 @@ func parseOptionsTemplateFlowSet(data []byte, header *FlowSetHeader) (interface{
 
 	buf := bytes.NewBuffer(data)
 	headerLen := binary.Size(t.TemplateId) + binary.Size(t.ScopeLength) + binary.Size(t.OptionLength)
-	for ; buf.Len() >= 4 ; { // Padding aligns to 4 byte boundary
+	for buf.Len() >= 4 { // Padding aligns to 4 byte boundary
 		if buf.Len() < headerLen {
 			return nil, errorMissingData(headerLen - buf.Len())
 		}
@@ -46,7 +45,7 @@ func parseOptionsTemplateFlowSet(data []byte, header *FlowSetHeader) (interface{
 		binary.Read(buf, binary.BigEndian, &t.ScopeLength)
 		binary.Read(buf, binary.BigEndian, &t.OptionLength)
 
-		if buf.Len() < int(t.ScopeLength) + int(t.OptionLength) {
+		if buf.Len() < int(t.ScopeLength)+int(t.OptionLength) {
 			return nil, errorMissingData(int(t.ScopeLength) + int(t.OptionLength) - buf.Len())
 		}
 
@@ -62,7 +61,6 @@ func parseOptionsTemplateFlowSet(data []byte, header *FlowSetHeader) (interface{
 	return set, nil
 }
 
-
 func parseTemplateFlowSet(data []byte, header *FlowSetHeader) (interface{}, error) {
 	var set TemplateFlowSet
 	var t TemplateRecord
@@ -73,7 +71,7 @@ func parseTemplateFlowSet(data []byte, header *FlowSetHeader) (interface{}, erro
 	buf := bytes.NewBuffer(data)
 	headerLen := binary.Size(t.TemplateId) + binary.Size(t.FieldCount)
 
-	for ; buf.Len() >= 4 ; { // Padding aligns to 4 byte boundary
+	for buf.Len() >= 4 { // Padding aligns to 4 byte boundary
 		if buf.Len() < headerLen {
 			return nil, errorMissingData(headerLen - buf.Len())
 		}
@@ -102,7 +100,7 @@ func parseDataFlowSet(data []byte, header *FlowSetHeader) (interface{}, error) {
 	return set, nil
 }
 
-func parseFlowSet(buf *bytes.Buffer) (interface {}, error) {
+func parseFlowSet(buf *bytes.Buffer) (interface{}, error) {
 	var setHeader FlowSetHeader
 
 	if buf.Len() < binary.Size(setHeader) {
@@ -118,7 +116,7 @@ func parseFlowSet(buf *bytes.Buffer) (interface {}, error) {
 
 	switch {
 	case setHeader.Id == 0:
-		return  parseTemplateFlowSet(buf.Next(setDataLen), &setHeader)
+		return parseTemplateFlowSet(buf.Next(setDataLen), &setHeader)
 	case setHeader.Id == 1:
 		return parseOptionsTemplateFlowSet(buf.Next(setDataLen), &setHeader)
 	default:
@@ -140,8 +138,8 @@ func Decode(data []byte) (*Packet, error) {
 	buf := bytes.NewBuffer(localData)
 
 	headerLen := binary.Size(p.Version) + binary.Size(p.Count) +
-			binary.Size(p.SysUpTime) + binary.Size(p.UnixSecs) +
-			binary.Size(p.SequenceNumber) + binary.Size(p.SourceId)
+		binary.Size(p.SysUpTime) + binary.Size(p.UnixSecs) +
+		binary.Size(p.SequenceNumber) + binary.Size(p.SourceId)
 
 	if buf.Len() < headerLen {
 		return nil, errorMissingData(headerLen - buf.Len())
@@ -160,7 +158,7 @@ func Decode(data []byte) (*Packet, error) {
 
 	p.FlowSets = make([]interface{}, 0, p.Count)
 
-	for i := 0; buf.Len() > 0 && i < int(p.Count); i +=1 {
+	for i := 0; buf.Len() > 0 && i < int(p.Count); i++ {
 		p.FlowSets = p.FlowSets[0 : i+1]
 		p.FlowSets[i], err = parseFlowSet(buf)
 		if err != nil {
