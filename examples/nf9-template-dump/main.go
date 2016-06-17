@@ -1,14 +1,13 @@
 package main
 
 import (
-	"fmt"
-	"os"
-	"net"
 	"flag"
+	"fmt"
+	"net"
+	"os"
+
 	"github.com/fln/nf9packet"
 )
-
-var listenAddr *string = flag.String("listen", ":9995", "Address to listen for NetFlow v9 packets.")
 
 func packetDump(addr net.Addr, data []byte) {
 	p, err := nf9packet.Decode(data)
@@ -44,6 +43,7 @@ func packetDump(addr net.Addr, data []byte) {
 }
 
 func main() {
+	listenAddr := flag.String("listen", ":9995", "Address to listen for NetFlow v9 packets.")
 	flag.Parse()
 
 	addr, err := net.ResolveUDPAddr("udp", *listenAddr)

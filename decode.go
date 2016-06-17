@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
+	"io"
 )
 
 func errorMissingData(bytes int) error {
@@ -137,20 +138,16 @@ func Decode(data []byte) (*Packet, error) {
 
 	buf := bytes.NewBuffer(localData)
 
-	headerLen := binary.Size(p.Version) + binary.Size(p.Count) +
-		binary.Size(p.SysUpTime) + binary.Size(p.UnixSecs) +
-		binary.Size(p.SequenceNumber) + binary.Size(p.SourceId)
-
-	if buf.Len() < headerLen {
-		return nil, errorMissingData(headerLen - buf.Len())
+	if err := chainReads(buf, binary.BigEndian,
+		&p.Version,
+		&p.Count,
+		&p.SysUpTime,
+		&p.UnixSecs,
+		&p.SequenceNumber,
+		&p.SourceId,
+	); err != nil {
+		return nil, err
 	}
-
-	binary.Read(buf, binary.BigEndian, &p.Version)
-	binary.Read(buf, binary.BigEndian, &p.Count)
-	binary.Read(buf, binary.BigEndian, &p.SysUpTime)
-	binary.Read(buf, binary.BigEndian, &p.UnixSecs)
-	binary.Read(buf, binary.BigEndian, &p.SequenceNumber)
-	binary.Read(buf, binary.BigEndian, &p.SourceId)
 
 	if p.Version != 9 {
 		return nil, errorIncompatibleVersion(p.Version)
@@ -171,4 +168,15 @@ func Decode(data []byte) (*Packet, error) {
 	}
 
 	return &p, nil
+}
+
+func chainReads(r io.Reader, order binary.ByteOrder, args ...interface{}) error {
+	var err error
+	for _, arg := range args {
+		err = binary.Read(r, order, arg)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

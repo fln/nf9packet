@@ -1,5 +1,7 @@
 package nf9packet
 
+import "fmt"
+
 // Field describes type and length of a single value in a Flow Data Record.
 // Field does not contain the record value itself it is just a description of
 // what record value will look like.
@@ -11,13 +13,19 @@ type Field struct {
 	Length uint16
 }
 
+// String is a convenience method for printing field name as a default field
+// value string representation.
+func (f Field) String() string {
+	return f.Name()
+}
+
 // Name returns a short field type identifier based on RFC 3954 and Cisco
 // documentation. For unkown field types string "UNKNOWN_TYPE" will be returned.
 func (f *Field) Name() string {
 	if e, ok := fieldDb[f.Type]; ok {
 		return e.Name
 	}
-	return "UNKNOWN_TYPE"
+	return fmt.Sprintf("UNKNOWN_TYPE_%d", f.Type)
 }
 
 // DefaultLength returns length of field type as specified in RFC 3954 and Cisco
@@ -35,7 +43,7 @@ func (f *Field) Description() string {
 	if e, ok := fieldDb[f.Type]; ok {
 		return e.Description
 	}
-	return "Unknown type"
+	return fmt.Sprintf("Unknown type (%d)", f.Type)
 }
 
 // DataToString converts field value to string representation based on field

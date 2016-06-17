@@ -1,16 +1,16 @@
 package main
 
 import (
-	"fmt"
-	"os"
-	"net"
-	"flag"
 	"encoding/json"
+	"flag"
+	"fmt"
+	"net"
+	"os"
+
 	"github.com/fln/nf9packet"
 )
 
-var listenAddr *string = flag.String("listen", ":9995", "Address to listen for NetFlow v9 packets.")
-var dumpJson *bool = flag.Bool("json", false, "Dump packet in JSON instead of plain text.")
+var dumpJSON bool
 
 func packetDump(addr net.Addr, data []byte) {
 	fmt.Fprintln(os.Stderr, "Got packet from: ", addr)
@@ -21,7 +21,7 @@ func packetDump(addr net.Addr, data []byte) {
 		return
 	}
 
-	if *dumpJson {
+	if dumpJSON {
 		json, _ := json.MarshalIndent(p, "", "\t")
 		fmt.Printf("%s\n", json)
 	} else {
@@ -31,6 +31,8 @@ func packetDump(addr net.Addr, data []byte) {
 }
 
 func main() {
+	listenAddr := flag.String("listen", ":9995", "Address to listen for NetFlow v9 packets.")
+	flag.BoolVar(&dumpJSON, "json", false, "Dump packet in JSON instead of plain text.")
 	flag.Parse()
 
 	addr, err := net.ResolveUDPAddr("udp", *listenAddr)
